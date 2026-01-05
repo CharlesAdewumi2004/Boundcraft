@@ -1,21 +1,25 @@
-#pragma once
-
-#include <cstddef>
 #include <iterator>
 
 namespace hybrid_search::detail
 {
 
-    /* ============================================================
-       RANDOM ACCESS ITERATORS
-       ============================================================ */
+    template <class It>
+    concept random_it = std::random_access_iterator<It>;
 
-    template <class RandomIt, class V, class Comp>
-    inline void lower_bound_probe_ra(RandomIt &first, typename std::iterator_traits<RandomIt>::difference_type &count, const V &value, Comp comp)
+    template <class It>
+    concept forward_not_random_it =
+        std::forward_iterator<It> && (!std::random_access_iterator<It>);
+
+    /* ===================== RANDOM ACCESS ===================== */
+
+    template <random_it RandomIt, class V, class Comp>
+    inline void lower_bound_probe_ra(
+        RandomIt &first,
+        std::iter_difference_t<RandomIt> &count,
+        const V &value,
+        Comp comp)
     {
-        using diff_t = typename std::iterator_traits<RandomIt>::difference_type;
-
-        diff_t step = count / 2;
+        auto step = count / 2;
         RandomIt mid = first + step;
 
         if (comp(*mid, value))
@@ -29,12 +33,11 @@ namespace hybrid_search::detail
         }
     }
 
-    template <class RandomIt, class V, class Comp>
-    inline RandomIt lower_bound_standard_binary_ra(RandomIt first, RandomIt last, const V &value, Comp comp)
+    template <random_it RandomIt, class V, class Comp>
+    inline RandomIt lower_bound_standard_binary_impl(
+        RandomIt first, RandomIt last, const V &value, Comp comp)
     {
-        using diff_t = typename std::iterator_traits<RandomIt>::difference_type;
-
-        diff_t count = last - first;
+        auto count = last - first;
         while (count > 0)
         {
             lower_bound_probe_ra(first, count, value, comp);
@@ -42,17 +45,16 @@ namespace hybrid_search::detail
         return first;
     }
 
+    /* ===================== FORWARD (NOT RANDOM) ===================== */
 
-    /* ============================================================
-       FORWARD ITERATORS
-       ============================================================ */
-
-    template <class ForwardIt, class V, class Comp>
-    inline void lower_bound_probe_fw(ForwardIt &first, typename std::iterator_traits<ForwardIt>::difference_type &count, const V &value, Comp comp)
+    template <forward_not_random_it ForwardIt, class V, class Comp>
+    inline void lower_bound_probe_fw(
+        ForwardIt &first,
+        std::iter_difference_t<ForwardIt> &count,
+        const V &value,
+        Comp comp)
     {
-        using diff_t = typename std::iterator_traits<ForwardIt>::difference_type;
-
-        diff_t step = count / 2;
+        auto step = count / 2;
         ForwardIt mid = first;
         std::advance(mid, step);
 
@@ -68,18 +70,16 @@ namespace hybrid_search::detail
         }
     }
 
-    template <class ForwardIt, class V, class Comp>
-    inline ForwardIt lower_bound_standard_binary_fw(ForwardIt first, ForwardIt last, const V &value, Comp comp)
+    template <forward_not_random_it ForwardIt, class V, class Comp>
+    inline ForwardIt lower_bound_standard_binary_impl(
+        ForwardIt first, ForwardIt last, const V &value, Comp comp)
     {
-        using diff_t = typename std::iterator_traits<ForwardIt>::difference_type;
-
-        diff_t count = std::distance(first, last);
+        auto count = std::distance(first, last);
         while (count > 0)
         {
             lower_bound_probe_fw(first, count, value, comp);
         }
         return first;
     }
-
 
 }
