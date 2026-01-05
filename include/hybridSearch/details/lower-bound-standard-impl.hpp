@@ -1,5 +1,7 @@
-#include <iterator>
+#pragma once
 
+#include <iterator>
+#include <concepts>
 namespace hybrid_search::detail
 {
 
