@@ -34,7 +34,10 @@ namespace hybrid_search::policy::gallop
     struct start_middle final
     {
     };
+    
+    template<std::size_t Start_Point>
     struct start_last_searched final
     {
+        size_t start_point = Start_Point;
     };
 }
