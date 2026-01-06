@@ -34,20 +34,22 @@ namespace hybrid_search::detail
    {
       using diff_t = typename std::iterator_traits<RandomIt>::difference_type;
 
+      const diff_t avail_left = start_point - first; // how many steps we can go left (>=0)
+
       diff_t low = 0;
       diff_t high = 1;
 
-      while (start_point - high >= first && comp(value, *(start_point - high)))
+      while (high <= avail_left && !comp(*(start_point - high), value))
       {
          low = high;
          high *= 2;
       }
 
-      if (start_point - high >= high)
-      {
-         high = start_point - high;
-      }
-      last = start_point - (low + 1);
+      diff_t upper = low;
+      diff_t lower = (high > avail_left) ? avail_left : high; 
+
+      first = start_point - lower; 
+      last = start_point - upper + 1;
    }
 
    template <class Search_Policy, class Gallop_Start, class It, class V, class Comp>
@@ -55,6 +57,7 @@ namespace hybrid_search::detail
    {
       if constexpr (std::is_same_v(hybrid_search::policy::gallop::start_front, Gallop_Start))
       {
+         
       }
       else if constexpr (std::is_same_v(hybrid_search::policy::gallop::start_back, Gallop_Start))
       {
