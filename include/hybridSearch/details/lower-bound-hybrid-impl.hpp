@@ -33,7 +33,7 @@ namespace hybrid_search::detail
         using diff_t = typename std::iterator_traits<RandomIt>::difference_type;
 
         diff_t count = last - first;
-        while (count > range)
+        while (count > static_cast<diff_t>(range))
         {
             lower_bound_probe_ra(first, count, value, comp);
         }
