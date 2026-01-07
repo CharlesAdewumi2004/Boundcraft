@@ -10,15 +10,15 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(benchmark)
 
-add_executable(hybrid_search_bench
+add_executable(boundcraft_bench
   bm_lower_bound.cpp
 )
 
-target_link_libraries(hybrid_search_bench
+target_link_libraries(boundcraft_bench
   PRIVATE
-    hybrid_search::hybrid_search
+    boundcraft::boundcraft
     benchmark::benchmark
     benchmark::benchmark_main
 )
 
-target_compile_features(hybrid_search_bench PRIVATE cxx_std_20)
+target_compile_features(boundcraft_bench PRIVATE cxx_std_20)

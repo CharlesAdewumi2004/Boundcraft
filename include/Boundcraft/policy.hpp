@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace hybrid_search::policy
+namespace boundcraft::policy
 {
     struct standard_binary final
     {
@@ -23,7 +23,7 @@ namespace hybrid_search::policy
 
 }
 
-namespace hybrid_search::policy::gallop
+namespace boundcraft::policy::gallop
 {
     struct start_front final
     {

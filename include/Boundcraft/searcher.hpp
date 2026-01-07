@@ -11,7 +11,7 @@
 #include "policy.hpp"
 #include "traits.hpp"
 
-namespace hybrid_search
+namespace boundcraft
 {
     template <class Comp, class It, class V>
     concept lower_bound_comparator =
@@ -171,24 +171,24 @@ namespace hybrid_search
         requires lower_bound_comparator<Comp, It, V>
     It searcher<Policy>::dispatch(It first, It last, const V &value, Comp comp)
     {
-        using traits = hybrid_search::policy::traits::policy_traits<Policy>;
+        using traits = boundcraft::policy::traits::policy_traits<Policy>;
         constexpr auto k = traits::kind;
 
         if constexpr (k == policy_kind::standard_binary)
         {
-            return hybrid_search::detail::lower_bound_standard_binary_impl(first, last, value, comp);
+            return boundcraft::detail::lower_bound_standard_binary_impl(first, last, value, comp);
         }
         else if constexpr (k == policy_kind::hybrid)
         {
             constexpr std::size_t threshold = traits::threshold;
-            return hybrid_search::detail::lower_bound_hybrid_impl(threshold, first, last, value, comp);
+            return boundcraft::detail::lower_bound_hybrid_impl(threshold, first, last, value, comp);
         }
         else if constexpr (k == policy_kind::galloping)
         {
             using search_policy_t = typename traits::search_policy;
             using gallop_start_t = typename traits::gallop_start;
 
-            return hybrid_search::detail::lower_bound_gallop_impl<
+            return boundcraft::detail::lower_bound_gallop_impl<
                 search_policy_t,
                 gallop_start_t>(first, last, value, comp);
         }

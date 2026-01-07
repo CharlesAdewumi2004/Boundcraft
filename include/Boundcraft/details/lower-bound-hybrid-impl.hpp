@@ -1,27 +1,11 @@
 #pragma once
 
-#include <cstddef>
-#include <iterator>
+#include "util.hpp"
 
-#include "lower-bound-standard-impl.hpp"
-
-namespace hybrid_search::detail
+namespace boundcraft::detail
 {
 
-    template <class It, class V, class Comp>
-    [[nodiscard]] inline It lower_bound_linear_scan(It first, typename std::iterator_traits<It>::difference_type count, const V &value, Comp comp)
-    {
-        while (count > 0)
-        {
-            if (!comp(*first, value))
-            {
-                break;
-            }
-            ++first;
-            --count;
-        }
-        return first;
-    }
+    
 
     /* ============================================================
        RANDOM ACCESS ITERATORS

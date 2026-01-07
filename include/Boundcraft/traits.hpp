@@ -9,7 +9,7 @@ enum class policy_kind
     hybrid
 };
 
-namespace hybrid_search::policy::traits
+namespace boundcraft::policy::traits
 {
 
     template <class Policy>
@@ -38,7 +38,7 @@ namespace hybrid_search::policy::traits
 };
 
 
-namespace hybrid_search::policy::gallop::traits {
+namespace boundcraft::policy::gallop::traits {
 
 template <class T>
 struct is_gallop_start_policy : std::false_type {};
