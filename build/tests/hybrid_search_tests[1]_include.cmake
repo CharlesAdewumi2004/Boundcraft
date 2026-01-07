@@ -1,5 +1,0 @@
-if(EXISTS "/home/charlie/dev/hybridSearch/build/tests/hybrid_search_tests[1]_tests.cmake")
-  include("/home/charlie/dev/hybridSearch/build/tests/hybrid_search_tests[1]_tests.cmake")
-else()
-  add_test(hybrid_search_tests_NOT_BUILT hybrid_search_tests_NOT_BUILT)
-endif()
