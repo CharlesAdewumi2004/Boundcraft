@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <span>
 #include <functional>
-#include <iterator> // std::indirect_strict_weak_order
+#include <iterator>
 
 #include "details/lower-bound-gallop-impl.hpp"
 #include "details/lower-bound-hybrid-impl.hpp"
@@ -180,15 +180,11 @@ namespace hybrid_search
         }
         else if constexpr (k == policy_kind::hybrid)
         {
-            const std::size_t threshold = traits::threshold;
+            constexpr std::size_t threshold = traits::threshold;
             return hybrid_search::detail::lower_bound_hybrid_impl(threshold, first, last, value, comp);
         }
         else if constexpr (k == policy_kind::galloping)
         {
-            // Gallop decides range, then uses Search_Policy internally.
-            // Requirements on traits<Policy> for galloping policies:
-            //   using search_policy = ...;   (type)
-            //   using gallop_start  = ...;   (type, e.g. integral-constant wrapper)
             using search_policy_t = typename traits::search_policy;
             using gallop_start_t = typename traits::gallop_start;
 
@@ -198,8 +194,7 @@ namespace hybrid_search
         }
         else
         {
-            static_assert([]
-                          { return false; }(), "Unknown policy");
+            static_assert([]{ return false; }(), "Unknown policy");
         }
     }
 

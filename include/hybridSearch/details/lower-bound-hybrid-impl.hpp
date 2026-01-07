@@ -9,7 +9,7 @@ namespace hybrid_search::detail
 {
 
     template <class It, class V, class Comp>
-    inline It lower_bound_linear_scan(It first, typename std::iterator_traits<It>::difference_type count, const V &value, Comp comp)
+    [[nodiscard]] inline It lower_bound_linear_scan(It first, typename std::iterator_traits<It>::difference_type count, const V &value, Comp comp)
     {
         while (count > 0)
         {
@@ -37,7 +37,7 @@ namespace hybrid_search::detail
         {
             lower_bound_probe_ra(first, count, value, comp);
         }
-        lower_bound_linear_scan(first, count, value, comp);
+        first = lower_bound_linear_scan(first, count, value, comp);
         return first;
     }
 

@@ -79,7 +79,7 @@ template <class T>
 inline constexpr kind start_kind_v = start_kind<T>::value;
 
 template <class T>
-struct start_point : std::integral_constant<std::size_t, 0> {}; // default 0
+struct start_point : std::integral_constant<std::size_t, 0> {};     
 
 template <std::size_t P>
 struct start_point<start_last_searched<P>> : std::integral_constant<std::size_t, P> {};
