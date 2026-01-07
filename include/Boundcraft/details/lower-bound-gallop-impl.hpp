@@ -4,8 +4,8 @@
 #include <iterator>
 #include <type_traits>
 
-#include <hybridSearch/policy.hpp>
-#include <hybridSearch/traits.hpp>
+#include <Boundcraft/policy.hpp>
+#include <Boundcraft/traits.hpp>
 
 #include "lower-bound-hybrid-impl.hpp"
 #include "lower-bound-standard-impl.hpp"
