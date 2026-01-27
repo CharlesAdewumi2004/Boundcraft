@@ -2,13 +2,25 @@ cmake_minimum_required(VERSION 3.24)
 
 project(boundcraft VERSION 0.1.0 LANGUAGES CXX)
 
-# ---- Options ----
-option(BOUNDCRAFT_BUILD_TESTS "Build boundcraft tests" ON)
-option(BOUNDCRAFT_BUILD_BENCH "Build boundcraft benchmarks" ON)
-
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
-# ---- Library target (header-only) ----
+# =========================================
+# Options
+# - Default OFF when used as a dependency
+# - Default ON when Boundcraft is top-level
+# =========================================
+option(BOUNDCRAFT_BUILD_TESTS "Build boundcraft tests" OFF)
+option(BOUNDCRAFT_BUILD_BENCH "Build boundcraft benchmarks" OFF)
+
+if (PROJECT_IS_TOP_LEVEL)
+  set(BOUNDCRAFT_BUILD_TESTS ON CACHE BOOL "Build boundcraft tests" FORCE)
+  set(BOUNDCRAFT_BUILD_BENCH ON CACHE BOOL "Build boundcraft benchmarks" FORCE)
+endif()
+
+# =========================
+# Library target (header-only)
+# =========================
 add_library(boundcraft INTERFACE)
 add_library(boundcraft::boundcraft ALIAS boundcraft)
 
@@ -18,7 +30,7 @@ target_include_directories(boundcraft
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-target_compile_features(boundcraft INTERFACE cxx_std_20)
+target_compile_features(boundcraft INTERFACE cxx_std_23)
 
 if (MSVC)
   target_compile_options(boundcraft INTERFACE /W4)
@@ -26,10 +38,11 @@ else()
   target_compile_options(boundcraft INTERFACE -Wall -Wextra -Wpedantic)
 endif()
 
-# ---- Tests ----
+# ======
+# Tests
+# ======
 if (BOUNDCRAFT_BUILD_TESTS)
-  enable_testing()
-
+  include(CTest) # enables testing + adds 'test' target when top-level
   if (EXISTS "${PROJECT_SOURCE_DIR}/tests/CMakeLists.txt")
     add_subdirectory(tests)
   else()
@@ -37,7 +50,9 @@ if (BOUNDCRAFT_BUILD_TESTS)
   endif()
 endif()
 
-# ---- Benchmarks ----
+# ==========
+# Benchmarks
+# ==========
 if (BOUNDCRAFT_BUILD_BENCH)
   if (EXISTS "${PROJECT_SOURCE_DIR}/bench/CMakeLists.txt")
     add_subdirectory(bench)
@@ -46,7 +61,9 @@ if (BOUNDCRAFT_BUILD_BENCH)
   endif()
 endif()
 
-# ---- Install / export ----
+# ==================
+# Install / Export
+# ==================
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/"
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 
@@ -58,8 +75,6 @@ install(EXPORT boundcraftTargets
   NAMESPACE boundcraft::
   DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/boundcraft"
 )
-
-include(CMakePackageConfigHelpers)
 
 write_basic_package_version_file(
   "${PROJECT_BINARY_DIR}/boundcraftConfigVersion.cmake"
