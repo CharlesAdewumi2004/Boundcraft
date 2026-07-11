@@ -58,7 +58,7 @@ namespace boundcraft::detail
     {
         while (count > 0)
         {
-            if (!comp(value, *first))
+            if (comp(value, *first))
             {
                 break;
             }
@@ -77,7 +77,7 @@ namespace boundcraft::detail
         diff_t low = 0;
         diff_t high = 1;
 
-        while (high < avail_right && comp(value, *(start_point + high)))
+        while (high < avail_right && !comp(value, *(start_point + high)))
         {
             low = high;
             high *= 2;
@@ -99,7 +99,7 @@ namespace boundcraft::detail
         diff_t low = 0;
         diff_t high = 1;
 
-        while (high <= avail_left && !comp(value, *(start_point - high)))
+        while (high <= avail_left && comp(value, *(start_point - high)))
         {
             low = high;
             high *= 2;

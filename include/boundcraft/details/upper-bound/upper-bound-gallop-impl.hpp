@@ -71,7 +71,7 @@ namespace boundcraft::detail
         It lo = first;
         It hi = last;
 
-        if (comp(value, *start_point))
+        if (!comp(value, *start_point))
         {
             if (start_point == last - 1)
             {
