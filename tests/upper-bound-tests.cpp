@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <forward_list>
 #include <random>
 #include <span>
 #include <type_traits>
@@ -45,8 +46,26 @@ inline constexpr auto one_way_upper_comp = [](int k, const Elem& e) noexcept {
 template <class Policy>
 using Searcher = boundcraft::searcher<Policy>;
 
-// EDIT THIS LIST:
-using PoliciesUnderTest = ::testing::Types<boundcraft::policy::standard_binary>;
+namespace bp = boundcraft::policy;
+namespace bg = boundcraft::policy::gallop;
+
+template <class Search, class Start>
+using galloping = bp::galloping<Search, Start>;
+
+// Galloping is random-access only, so it appears here (vector/array/span) but
+// not in the forward-iterator suite below.
+using PoliciesUnderTest = ::testing::Types<
+    bp::standard_binary,
+    bp::hybrid<1>,
+    bp::hybrid<16>,
+    bp::hybrid<64>,
+    galloping<bp::standard_binary, bg::start_front>,
+    galloping<bp::standard_binary, bg::start_back>,
+    galloping<bp::standard_binary, bg::start_middle>,
+    galloping<bp::standard_binary, bg::start_last_searched<3>>,
+    galloping<bp::hybrid<16>, bg::start_middle>,
+    galloping<bp::hybrid<64>, bg::start_front>
+>;
 
 template <class Policy>
 class UpperBoundTests : public ::testing::Test {
@@ -198,13 +217,63 @@ TYPED_TEST(UpperBoundTests, Randomized_PropertyTest_AgreesWithStd) {
         ASSERT_TRUE(it1 >= v.begin() && it1 <= v.end());
         EXPECT_EQ(std::distance(v.begin(), it1), std::distance(v.begin(), it2));
 
-        // Invariant: all before are <= q; at it is > q (if not end)
-        for (auto it = v.begin(); it != it1; ++it) {
-            ASSERT_LE(*it, q);
+        // Partition invariant at the boundary.
+        if (it1 != v.begin()) {
+            ASSERT_LE(*(it1 - 1), q);
         }
         if (it1 != v.end()) {
             ASSERT_GT(*it1, q);
         }
+    }
+}
+
+// ------------------------------------------------------------
+// Exhaustive small ranges. Direction errors in the galloping and hybrid
+// paths show up here immediately, at sizes small enough to debug by hand.
+// ------------------------------------------------------------
+TYPED_TEST(UpperBoundTests, ExhaustiveSmallRanges_MatchStd) {
+    for (int n = 1; n <= 40; ++n) {
+        std::vector<int> v;
+        v.reserve(static_cast<std::size_t>(n));
+        for (int i = 0; i < n; ++i) v.push_back(i * 2);
+
+        for (int q = -2; q <= 2 * n + 2; ++q) {
+            auto got = this->s.upper_bound(v.begin(), v.end(), q);
+            auto exp = std::upper_bound(v.begin(), v.end(), q);
+            ASSERT_EQ(std::distance(v.begin(), got), std::distance(v.begin(), exp))
+                << "n=" << n << " q=" << q;
+        }
+    }
+}
+
+TYPED_TEST(UpperBoundTests, DescendingData_WithGreaterComparator) {
+    std::vector<int> v{9, 7, 7, 5, 3, 1};
+    auto comp = std::greater<>{};
+
+    for (int q : {10, 9, 8, 7, 5, 1, 0}) {
+        auto got = this->s.upper_bound(v.begin(), v.end(), q, comp);
+        auto exp = std::upper_bound(v.begin(), v.end(), q, comp);
+        ASSERT_EQ(std::distance(v.begin(), got), std::distance(v.begin(), exp)) << "q=" << q;
+    }
+}
+
+// ------------------------------------------------------------
+// Forward-iterator coverage. Galloping is excluded by design.
+// ------------------------------------------------------------
+template <class Policy>
+class UpperBoundForwardIterator : public ::testing::Test {};
+
+using ForwardPolicies = ::testing::Types<bp::standard_binary, bp::hybrid<16>>;
+TYPED_TEST_SUITE(UpperBoundForwardIterator, ForwardPolicies);
+
+TYPED_TEST(UpperBoundForwardIterator, ForwardListMatchesStd) {
+    std::forward_list<int> fl{1, 2, 2, 4, 7, 9};
+    Searcher<TypeParam> s{};
+
+    for (int q : {0, 1, 2, 3, 4, 9, 10}) {
+        auto got = s.upper_bound(fl.begin(), fl.end(), q);
+        auto exp = std::upper_bound(fl.begin(), fl.end(), q);
+        ASSERT_EQ(std::distance(fl.begin(), got), std::distance(fl.begin(), exp)) << "q=" << q;
     }
 }
 
