@@ -1,13 +1,19 @@
 #pragma once
 
-#include "policy.hpp"
+#include <cstddef>
+#include <type_traits>
 
-enum class policy_kind
+#include <boundcraft/policy.hpp>
+
+namespace boundcraft
 {
-    standard_binary,
-    galloping,
-    hybrid
-};
+    enum class policy_kind
+    {
+        standard_binary,
+        galloping,
+        hybrid
+    };
+}
 
 namespace boundcraft::policy::traits
 {
@@ -35,7 +41,7 @@ namespace boundcraft::policy::traits
         static constexpr policy_kind kind = policy_kind::hybrid;
         static constexpr std::size_t threshold = T;
     };
-};
+}
 
 namespace boundcraft::policy::gallop::traits
 {
