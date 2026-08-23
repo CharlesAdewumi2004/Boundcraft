@@ -38,6 +38,6 @@ namespace boundcraft::policy::gallop
     template<std::size_t Start_Point>
     struct start_last_searched final
     {
-        size_t start_point = Start_Point;
+        static constexpr std::size_t start_point = Start_Point;
     };
 }

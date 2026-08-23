@@ -6,7 +6,7 @@ namespace boundcraft::detail
 {
 
     template <random_it RandomIt, class V, class Comp>
-    inline RandomIt lower_bound_hybrid_impl(size_t range, RandomIt first, RandomIt last, const V &value, Comp comp)
+    inline constexpr RandomIt lower_bound_hybrid_impl(size_t range, RandomIt first, RandomIt last, const V &value, Comp comp)
     {
         using diff_t = typename std::iterator_traits<RandomIt>::difference_type;
 
@@ -20,7 +20,7 @@ namespace boundcraft::detail
     }
 
     template <forward_not_random_it RandomIt, class V, class Comp>
-    inline RandomIt lower_bound_hybrid_impl(size_t range, RandomIt first, RandomIt last, const V &value, Comp comp)
+    inline constexpr RandomIt lower_bound_hybrid_impl(size_t range, RandomIt first, RandomIt last, const V &value, Comp comp)
     {
         using diff_t = typename std::iterator_traits<RandomIt>::difference_type;
 

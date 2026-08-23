@@ -11,7 +11,7 @@ namespace boundcraft::detail
 
     template <class Search_Policy, class Gallop_Start, class It, class V, class Comp>
         requires(!std::random_access_iterator<It>)
-    It upper_bound_gallop_impl(It, It, const V &, Comp)
+    constexpr It upper_bound_gallop_impl(It, It, const V &, Comp)
     {
         static_assert(always_false_v<It>,
                       "Boundcraft: galloping upper_bound requires RANDOM-ACCESS iterators "
@@ -22,7 +22,7 @@ namespace boundcraft::detail
 
     template <class Search_Policy, class Gallop_Start, class It, class V, class Comp>
         requires std::random_access_iterator<It>
-    It upper_bound_gallop_impl(It first, It last, const V &value, Comp comp)
+    constexpr It upper_bound_gallop_impl(It first, It last, const V &value, Comp comp)
     {
         if (first == last)
         {

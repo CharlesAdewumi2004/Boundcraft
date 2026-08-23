@@ -5,7 +5,7 @@ namespace boundcraft::detail
 {
 
     template <random_it RandomIt, class V, class Comp>
-    inline RandomIt upper_bound_standard_binary_impl(
+    inline constexpr RandomIt upper_bound_standard_binary_impl(
         RandomIt first, RandomIt last, const V &value, Comp comp)
     {
         auto count = last - first;
@@ -17,7 +17,7 @@ namespace boundcraft::detail
     }
 
     template <forward_not_random_it ForwardIt, class V, class Comp>
-    inline ForwardIt upper_bound_standard_binary_impl(
+    inline constexpr ForwardIt upper_bound_standard_binary_impl(
         ForwardIt first, ForwardIt last, const V &value, Comp comp)
     {
         auto count = std::distance(first, last);

@@ -15,7 +15,7 @@ namespace boundcraft::detail
     
 
     template <random_it RandomIt, class V, class Comp>
-    inline void lower_bound_probe_ra(
+    inline constexpr void lower_bound_probe_ra(
         RandomIt &first,
         std::iter_difference_t<RandomIt> &count,
         const V &value,
@@ -36,7 +36,7 @@ namespace boundcraft::detail
     }
 
     template <forward_not_random_it ForwardIt, class V, class Comp>
-    inline void lower_bound_probe_fw(ForwardIt &first, std::iter_difference_t<ForwardIt> &count, const V &value, Comp comp)
+    inline constexpr void lower_bound_probe_fw(ForwardIt &first, std::iter_difference_t<ForwardIt> &count, const V &value, Comp comp)
     {
         auto step = count / 2;
         ForwardIt mid = first;
@@ -55,7 +55,7 @@ namespace boundcraft::detail
     }
 
     template <class It, class V, class Comp>
-    [[nodiscard]] inline It lower_bound_linear_scan(It first, typename std::iterator_traits<It>::difference_type count, const V &value, Comp comp)
+    [[nodiscard]] inline constexpr It lower_bound_linear_scan(It first, typename std::iterator_traits<It>::difference_type count, const V &value, Comp comp)
     {
         while (count > 0)
         {
@@ -70,7 +70,7 @@ namespace boundcraft::detail
     }
 
     template <class RandomIt, class V, class Comp>
-    inline void lower_bound_expand_right(RandomIt &first, RandomIt &last, RandomIt start_point, const V &value, Comp comp)
+    inline constexpr void lower_bound_expand_right(RandomIt &first, RandomIt &last, RandomIt start_point, const V &value, Comp comp)
     {
         using diff_t = typename std::iterator_traits<RandomIt>::difference_type;
 
@@ -91,7 +91,7 @@ namespace boundcraft::detail
     }
 
     template <class RandomIt, class V, class Comp>
-    inline void lower_bound_expand_left(RandomIt &first, RandomIt &last, RandomIt start_point, const V &value, Comp comp)
+    inline constexpr void lower_bound_expand_left(RandomIt &first, RandomIt &last, RandomIt start_point, const V &value, Comp comp)
     {
         using diff_t = typename std::iterator_traits<RandomIt>::difference_type;
 
