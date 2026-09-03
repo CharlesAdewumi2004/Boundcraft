@@ -10,14 +10,14 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(benchmark)
 
-add_executable(BM_lower_bound_compare BM_lower_bound_compare.cpp)
+add_executable(BM_bounds_compare BM_bounds_compare.cpp)
 
-target_link_libraries(BM_lower_bound_compare
+target_link_libraries(BM_bounds_compare
   PRIVATE
     boundcraft::boundcraft
     benchmark::benchmark
 )
 
-target_compile_features(BM_lower_bound_compare PRIVATE cxx_std_23)
+target_compile_features(BM_bounds_compare PRIVATE cxx_std_23)
 
 
